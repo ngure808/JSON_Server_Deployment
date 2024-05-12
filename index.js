@@ -1,17 +1,21 @@
 const jsonServer = require("json-server");
-const cors = require("cors");
-const path = require("path");
-const server = jsonServer.create();
-const router = jsonServer.router(path.join(__dirname, "db", "db.json"));
-const middlewares = jsonServer.defaults();
+const cors = require("cors"); // Import the cors library
 
-server.use(cors());
-server.use(jsonServer.bodyParser);
+const server = jsonServer.create();
+const router = jsonServer.router("db.json");
+const middlewares = jsonServer.defaults();
+const port = 3000;
+
+// Configure CORS to allow requests from any origin
+const corsOptions = {
+  origin: "*"
+};
+
+// Apply CORS middleware with options
+server.use(cors(corsOptions));
+
+// Apply other middlewares
 server.use(middlewares);
 server.use(router);
 
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => {
-  console.log(`JSON Server is running on http://localhost:${PORT}`);
-});
+server.listen(port);
