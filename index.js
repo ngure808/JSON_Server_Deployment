@@ -1,30 +1,17 @@
 const jsonServer = require("json-server");
-const cors = require("cors"); // Import the cors library
-
+const cors = require("cors");
+const path = require("path");
 const server = jsonServer.create();
-const router = jsonServer.router("db.json");
+const router = jsonServer.router(path.join(__dirname, "db", "db.json"));
 const middlewares = jsonServer.defaults();
-const port = 3000;
 
-// Specify the allowed origin (e.g., your Netlify frontend URL)
-const allowedOrigins = ['https://flavour-haven.netlify.app/'];
-
-// Configure CORS with allowed origins
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-};
-
-// Apply CORS middleware with options
-server.use(cors(corsOptions));
-
-// Apply other middlewares
+server.use(cors());
+server.use(jsonServer.bodyParser);
 server.use(middlewares);
 server.use(router);
 
-server.listen(port);
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`JSON Server is running on http://localhost:${PORT}`);
+});
